@@ -1,0 +1,52 @@
+/* Estilos base */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--gray-100);
+  color: var(--gray-900);
+  line-height: 1.6;
+}
+
+/* Efecto hover en tarjetas */
+.hover-shadow {
+  transition: var(--transition);
+}
+
+.hover-shadow:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Estilos para el textarea de JSON */
+.font-monospace {
+  font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background-color: var(--gray-100);
+}
+
+/* Transiciones suaves */
+.transition-all {
+  transition: var(--transition);
+}
+
+/* Mejoras en los botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .card {
+    border-radius: var(--border-radius);
+  }
+  
+  .btn {
+    padding: 0.4rem 0.8rem;
+  }
+}

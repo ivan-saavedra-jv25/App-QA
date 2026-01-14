@@ -1,0 +1,214 @@
+:root {
+
+  /* COLOR MAESTRO */
+  --hue: 170;   /* derivado de #00C0A0 */
+
+  /* PRIMARIO */
+  --primary: #20C0C0;
+  --primary-soft: rgba(0,192,160,.12);
+  --primary-light: rgba(0,192,160,.22);
+  
+  /* SUCCESS */
+  --success: #00C0A0;
+  --success-soft: rgba(0,192,160,.14);
+
+  /* INFO (celeste corporativo) */
+  --info: #C0E0E0;
+  --info-soft: rgba(192,224,224,.25);
+
+  /* WARNING (gris claro) */
+  --warning: #E0E0E0;
+  --warning-soft: rgba(224,224,224,.35);
+
+  /* DANGER (rojo corporativo) */
+  --danger: #E02000;
+  --danger-soft: rgba(224,32,0,.14);
+
+  /* NEUTROS */
+  --white: #ffffff;
+  --black: #101010;
+
+  --gray-100: #F8FAFA;
+  --gray-200: #E0E0E0;
+  --gray-300: #D0D5D8;
+  --gray-400: #A0A8AB;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #101010;
+
+  /* BACKGROUNDS */
+  --bg-primary: #ffffff;
+  --bg-secondary: #F8FAFA;
+  --bg-tertiary: #E0E0E0;
+
+  /* BORDERS */
+  --border-color: #E0E0E0;
+  --border-radius: .6rem;
+  --border-radius-lg: .85rem;
+
+  /* SHADOWS */
+  --shadow-sm: 0 1px 3px rgba(16,16,16,.08);
+  --shadow-md: 0 6px 14px rgba(16,16,16,.12);
+  --shadow-lg: 0 12px 26px rgba(16,16,16,.16);
+
+  /* TEXT */
+  --text-primary: #101010;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+
+  --transition: all .2s ease;
+}
+
+
+/* Resto de tus estilos base... */
+/* Estilos base minimalistas */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #212529;
+  line-height: 1.6;
+}
+
+/* Contenedor principal */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado */
+.App-header {
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+/* Logo */
+.App-logo {
+  height: 2.5rem;
+  pointer-events: none;
+  margin-bottom: 1rem;
+}
+
+/* Enlaces */
+.App-link {
+  color: #0d6efd;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.App-link:hover {
+  color: #0a58ca;
+  text-decoration: underline;
+}
+
+/* Contenido principal */
+.main-content {
+  flex: 1;
+  padding: 0 1rem;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 3rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+/* Efectos de hover suaves */
+a, button {
+  transition: all 0.2s ease;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .App-header {
+    padding: 0.75rem 0;
+  }
+
+  .App-logo {
+    height: 2rem;
+  }
+
+  .footer {
+    padding: 1.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+.boton-primario {
+  background-color: var(--primary);
+  color: var(--white);
+  border: 1px solid var(--primary);
+}
+
+.texto-principal {
+  color: var(--text-primary);
+}
+
+.fondo-secundario {
+  background-color: var(--bg-secondary);
+}
+
+/* Estilos minimalistas */
+.container {
+  max-width: 800px;
+  padding: 1rem;
+}
+
+/* Tarjeta principal */
+.card {
+  border: none;
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background-color: var(--white);
+}
+
+/* Encabezado */
+.card-header {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+/* Tarjetas de prueba */
+.testItem {
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+  background: var(--white);
+  margin-bottom: 1rem;
+  border-radius: var(--border-radius);
+}
+
+.testItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Botones */
+.btn-sm {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius);
+}
