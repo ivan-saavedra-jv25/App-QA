@@ -24,12 +24,12 @@ module.exports = {
       created_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false,
+        allowNull: true,
       },
       updated_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false,
+        allowNull: true,
       },
     });
   },

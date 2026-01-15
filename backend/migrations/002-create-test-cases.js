@@ -11,12 +11,6 @@ module.exports = {
       plan_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: 'plans',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       name: {
         type: DataTypes.STRING(150),
@@ -26,6 +20,15 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      validation_type: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+      },
+      priority: {
+        type: DataTypes.ENUM('P1', 'P2', 'P3'),
+        allowNull: false,
+        defaultValue: 'P2',
+      },
       status: {
         type: DataTypes.ENUM('PENDING', 'PASSED', 'FAILED', 'NA'),
         defaultValue: 'PENDING',
@@ -34,12 +37,12 @@ module.exports = {
       created_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false,
+        allowNull: true,
       },
       updated_at: {
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-        allowNull: false,
+        allowNull: true,
       },
     });
 
@@ -54,6 +57,11 @@ module.exports = {
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
+    });
+
+    // Add index for foreign key
+    await queryInterface.addIndex('test_cases', ['plan_id'], {
+      name: 'fk_cases_plan'
     });
   },
 
