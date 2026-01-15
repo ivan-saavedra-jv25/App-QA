@@ -43,6 +43,12 @@ for arg in "${@:-}"; do
   esac
 done
 
+pids=$(lsof -ti:3000 || true)
+if [[ -n "$pids" ]]; then
+  echo "Liberando puerto 3000: $pids"
+  kill -9 $pids
+fi
+
 if ! command -v npm >/dev/null 2>&1; then
   printf '%s\n' "No se encontró 'npm' en PATH. Instalá Node.js/npm e intentá de nuevo." >&2
   exit 127
