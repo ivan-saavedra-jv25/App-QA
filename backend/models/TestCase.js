@@ -32,6 +32,7 @@ module.exports = (sequelize) => {
     validation_type: {
       type: DataTypes.STRING(100),
       allowNull: true,
+      field: 'validation_type',
       validate: {
         len: [0, 100],
       },

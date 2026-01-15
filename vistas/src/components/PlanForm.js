@@ -192,15 +192,13 @@ const PlanForm = ({ plan, isVisible, onClose, onPlanCreated }) => {
                         value={formData.testCasesJson}
                         onChange={handleChange}
                         placeholder={`[
-  {
-    "name": "Test Case 1",
-    "description": "Description for test case 1"
-  },
-  {
-    "name": "Test Case 2", 
-    "description": "Description for test case 2"
-  }
-]`}
+                          {
+                            "name": "Nombre técnico corto y único",
+                            "description": "Descripción exacta de lo que valida el caso",
+                            "validation_type": "Tipo de validación",
+                            "priority": "P1 | P2 | P3"
+                          }
+                        ]`}
                         rows={6}
                         disabled={loading}
                         style={{ fontSize: '0.875rem' }}

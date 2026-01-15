@@ -1,4 +1,5 @@
 const { Plan, TestCase } = require('../models');
+const logger = require('../utils/logger');
 
 class PlanController {
   // Obtener todos los planes
@@ -73,61 +74,65 @@ class PlanController {
 
   // Crear un nuevo plan
   static async createPlan(req, res) {
+    logger.log('=== INICIO CREATE PLAN ===');
+    logger.log('Request URL:', req.originalUrl);
+    logger.log('HTTP Method:', req.method);
+    logger.log('Request Headers:', req.headers);
+    logger.log('Request Body:', req.body);
+    
     try {
       const { name, description, testCases } = req.body;
 
+      logger.log('Datos extraídos:', {
+        name,
+        description,
+        testCases
+      });
+
       if (!name || name.trim() === '') {
+        logger.log('Error: Nombre vacío');
         return res.status(400).json({ message: 'Name is required' });
       }
 
       // Crear el plan
+      logger.log('Creando plan...');
       const plan = await Plan.create({
         name: name.trim(),
         description: description?.trim() || null,
       });
 
+      logger.log('Plan creado:', plan.toJSON());
+
       // Si se proporcionan test cases, crearlos
       if (testCases && Array.isArray(testCases) && testCases.length > 0) {
+        logger.log('Procesando test cases...');
         const validTestCases = testCases.filter(tc => tc.name && tc.name.trim() !== '');
         
+        logger.log('Test cases válidos:', validTestCases);
+        
         if (validTestCases.length > 0) {
-          await Promise.all(
-            validTestCases.map(tc => 
-              TestCase.create({
+          const createdTestCases = await Promise.all(
+            validTestCases.map(tc => {
+              logger.log('Creando test case:', tc);
+              return TestCase.create({
                 plan_id: plan.id,
                 name: tc.name.trim(),
                 description: tc.description?.trim() || null,
-              })
-            )
+                validation_type: tc.validation_type || tc.type || null,
+                priority: tc.priority || 'P2',
+                status: 'PENDING',
+              });
+            })
           );
+          
+          logger.log('Test cases creados:', createdTestCases.map(tc => tc.toJSON()));
         }
       }
 
-      // Obtener el plan completo con sus test cases
-      const createdPlan = await Plan.findByPk(plan.id, {
-        include: [{
-          model: TestCase,
-          as: 'testCases',
-          order: [['created_at', 'ASC']],
-        }],
-      });
-
-      // Calcular progreso
-      const planData = createdPlan.toJSON();
-      const totalCases = planData.testCases.length;
-      const completedCases = planData.testCases.filter(tc => tc.status !== 'PENDING').length;
-      const progress = totalCases > 0 ? Math.round((completedCases / totalCases) * 100) : 0;
-      
-      const planWithProgress = {
-        ...planData,
-        progress,
-        totalCases,
-        completedCases,
-      };
-
-      res.status(201).json(planWithProgress);
+      logger.log('=== FIN CREATE PLAN ===');
+      res.status(201).json(plan);
     } catch (error) {
-      console.error('Error creating plan:', error);
+      logger.error('Error en createPlan:', error);
       res.status(500).json({ message: 'Error creating plan' });
     }
   }
