@@ -1,4 +1,4 @@
-FROM node:18-alpine as build
+FROM node:20-alpine as build
 
 WORKDIR /app
 
@@ -6,10 +6,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm ci
+RUN npm install
 
 # Copiar código fuente
 COPY . .
+
+# Pasar variables de entorno al build
+ARG REACT_APP_API_URL
+ARG REACT_APP_ENV
 
 # Construir aplicación
 RUN npm run build

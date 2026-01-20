@@ -1,62 +1,41 @@
-version: '3.8'
+
 
 services:
-  # Base de datos MySQL
-  mysql:
-    image: mysql:8.0
-    container_name: app-qa-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: DBQA
-      MYSQL_USER: ivan.dev
-      MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    networks:
-      - app-qa-network
+
 
   # Backend Node.js
   backend:
     build: ./backend
     container_name: app-qa-backend
     restart: unless-stopped
-    environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: ivan.dev
-      DB_PASSWORD: root
-      DB_NAME: DBQA
-      DB_DIALECT: mysql
-      PORT: 4000
-      NODE_ENV: development
+    env_file:
+      - .env.backend
     ports:
-      - "4000:4000"
+      - "4001:4000"
     volumes:
       - ./backend/logs:/app/logs
-    depends_on:
-      - mysql
     networks:
       - app-qa-network
 
   # Frontend React + Nginx
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:4001}
+        - REACT_APP_ENV=${REACT_APP_ENV:-development}
     container_name: app-qa-frontend
     restart: unless-stopped
+    env_file:
+      - .env.frontend
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - backend
     networks:
       - app-qa-network
 
-volumes:
-  mysql_data:
-    driver: local
+
 
 networks:
   app-qa-network:
