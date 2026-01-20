@@ -1,0 +1,47 @@
+
+services:
+  # Backend Node.js con Hot Reload
+  backend:
+    build: ./backend
+    container_name: app-qa-backend-dev
+    restart: unless-stopped
+    env_file:
+      - .env.backend
+    ports:
+      - "4001:4000"
+    volumes:
+      - ./backend:/app                    # Montar todo el código fuente
+      - /app/node_modules                  # Evitar sobreescribir node_modules
+      - ./backend/logs:/app/logs          # Logs persistentes
+    networks:
+      - app-qa-network
+    environment:
+      - NODE_ENV=development               # Modo desarrollo
+    command: npm run dev                    # Usar nodemon para hot reload
+
+  # Frontend React con Hot Reload (servidor de desarrollo)
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: app-qa-frontend-dev
+    restart: unless-stopped
+    env_file:
+      - .env.frontend
+    ports:
+      - "3000:3000"                      # Puerto de desarrollo React
+    volumes:
+      - ./frontend/src:/app/src          # Montar src para hot reload
+      - ./frontend/public:/app/public     # Montar public
+      - /app/node_modules                 # Evitar sobreescribir node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-qa-network
+    environment:
+      - CHOKIDAR_USEPOLLING=true          # Para detectar cambios en Docker
+      - REACT_APP_API_URL=http://localhost:4001
+
+networks:
+  app-qa-network:
+    driver: bridge

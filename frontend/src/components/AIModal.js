@@ -1,28 +1,45 @@
 import React, { useState } from 'react';
+import { exportPrompt, getPromptText } from '../api';
 import './AIModal.css';
 
 const AIModal = ({ isVisible, onClose }) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [copiedText, setCopiedText] = useState('');
 
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      const response = await fetch('/promt.txt');
-      const text = await response.text();
-      
-      const blob = new Blob([text], { type: 'text/plain' });
+      const response = await exportPrompt();
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'prompt-qa-instructions.txt';
+      a.download = 'prompt.txt';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      console.error('Error downloading file:', error);
+      console.error('Error downloading prompt:', error);
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const text = await getPromptText();
+      
+      await navigator.clipboard.writeText(text);
+      setCopiedText('¡Copiado!');
+      
+      // Resetear mensaje después de 2 segundos
+      setTimeout(() => {
+        setCopiedText('');
+      }, 2000);
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      setCopiedText('Error al copiar');
     }
   };
 
@@ -79,6 +96,15 @@ const AIModal = ({ isVisible, onClose }) => {
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               <i className="fas fa-times me-2"></i>
               Cerrar
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-success me-2"
+              onClick={handleCopyToClipboard}
+              disabled={copiedText === '¡Copiado!'}
+            >
+              <i className={`fas ${copiedText === '¡Copiado!' ? 'fa-check' : 'fa-copy'} me-2`}></i>
+              {copiedText || 'Copiar al Portapapeles'}
             </button>
             <button 
               type="button" 

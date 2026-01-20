@@ -3,6 +3,9 @@ const TestCaseController = require('../controllers/testCaseController');
 
 const router = express.Router();
 
+// Exportar prompt para IA (DEBE ir antes de /:id)
+router.get('/export-prompt', TestCaseController.exportPrompt);
+
 // Obtener todos los test cases de un plan
 router.get('/plan/:planId', TestCaseController.getTestCasesByPlan);
 

@@ -208,37 +208,57 @@ class TestCaseController {
       const stats = await TestCase.findAll({
         where: { plan_id: planId },
         attributes: [
-          'status',
-          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'count']
+          [require('sequelize').fn('COUNT', require('sequelize').col('id')), 'total'],
+          [require('sequelize').fn('COUNT', require('sequelize').literal('CASE WHEN status = "passed" THEN 1 END')), 'passed'],
+          [require('sequelize').fn('COUNT', require('sequelize').literal('CASE WHEN status = "failed" THEN 1 END')), 'failed'],
+          [require('sequelize').fn('COUNT', require('sequelize').literal('CASE WHEN status = "pending" THEN 1 END')), 'pending'],
         ],
-        group: ['status'],
         raw: true,
       });
 
-      const result = {
-        PENDING: 0,
-        PASSED: 0,
-        FAILED: 0,
-        NA: 0,
-      };
-
-      stats.forEach(stat => {
-        result[stat.status] = parseInt(stat.count);
-      });
-
-      const total = Object.values(result).reduce((sum, count) => sum + count, 0);
-      const completed = total - result.PENDING;
-      const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-      res.json({
-        ...result,
-        total,
-        completed,
-        progress,
-      });
+      res.json(stats[0]);
     } catch (error) {
       console.error('Error getting plan stats:', error);
       res.status(500).json({ message: 'Error getting plan stats' });
+    }
+  }
+
+  // Exportar prompt para IA
+  static async exportPrompt(req, res) {
+    try {
+      logger.info('Exportando prompt para IA');
+      
+      // Leer el prompt desde archivo
+      const fs = require('fs');
+      const path = require('path');
+      const promptPath = path.join(__dirname, '..', 'prompt.txt');
+      
+      let prompt;
+      try {
+        prompt = fs.readFileSync(promptPath, 'utf8');
+        logger.info('Prompt leído desde archivo exitosamente');
+        logger.info('Tamaño del prompt:', prompt.length, 'caracteres');
+      } catch (fileError) {
+        logger.error('Error leyendo archivo prompt.txt:', fileError);
+        logger.error('Ruta del archivo:', promptPath);
+        logger.error('¿Existe el archivo?', fs.existsSync(promptPath));
+        
+        // Fallback a prompt hardcoded si el archivo no existe
+        prompt = ``;
+        logger.info('Usando prompt fallback');
+      }
+      
+      // Configurar headers para descarga de archivo
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="prompt.txt"');
+      
+      logger.info('Enviando prompt al cliente');
+      res.send(prompt);
+      logger.info('Prompt enviado exitosamente');
+    } catch (error) {
+      logger.error('Error exportando prompt:', error);
+      logger.error('Stack trace:', error.stack);
+      res.status(500).json({ message: 'Error exportando prompt', error: error.message });
     }
   }
 }

@@ -34,6 +34,27 @@ const logger = {
     const currentLogFile = getLogFileName();
     fs.appendFileSync(currentLogFile, fileContent);
   },
+
+  info: (message, data = null) => {
+    const timestamp = new Date().toISOString();
+    const logEntry = `[${timestamp}] INFO: ${message}`;
+    
+    console.log(logEntry);
+    
+    if (data) {
+      console.log(JSON.stringify(data, null, 2));
+    }
+    
+    // Escribir al archivo del día actual
+    let fileContent = `[${timestamp}] INFO: ${message}\n`;
+    if (data) {
+      fileContent += `${JSON.stringify(data, null, 2)}\n`;
+    }
+    fileContent += '----------------------------------------\n';
+    
+    const currentLogFile = getLogFileName();
+    fs.appendFileSync(currentLogFile, fileContent);
+  },
   
   error: (message, error = null) => {
     const timestamp = new Date().toISOString();

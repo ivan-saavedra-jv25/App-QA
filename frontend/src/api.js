@@ -91,3 +91,14 @@ export async function cleanupDatabase(){
   })
   return res.json()
 }
+
+// AI Assistant - Export prompt
+export async function exportPrompt(){
+  const res = await fetch(`${API}/api/test-cases/export-prompt`)
+  return res
+}
+
+export async function getPromptText(){
+  const res = await fetch(`${API}/api/test-cases/export-prompt`)
+  return res.text()
+}
