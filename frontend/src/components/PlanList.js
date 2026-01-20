@@ -107,7 +107,7 @@ const PlanList = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container bg-light vh-100" style={{ border: 'solid 1px #0dcaf0', borderRadius: '1%' }}>
       <div className="d-flex justify-content-between align-items-center mb-5">
         <div>
           <h1 style={{ fontSize: '1.875rem', fontWeight: '700', margin: 0, color: 'var(--text-primary)' }}>

@@ -244,26 +244,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
 
   return (
     <div className="container plan-view-container py-4" style={{ maxWidth: '1200px' }}>
-      <div className="plan-view-header d-flex align-items-center mb-4">
-        <button 
-          className="btn btn-outline-secondary me-3"
-          onClick={onBack}
-        >
-          <i className="fas fa-arrow-left me-2"></i>
-          Back to Plans
-        </button>
-        <div className="flex-grow-1">
-          <h1 className="h3 mb-1">{currentPlan.name}</h1>
-          <div className="d-flex align-items-center gap-3">
-            <span className={`badge ${getStatusBadgeClass(currentPlan.status)}`}>
-              {currentPlan.status}
-            </span>
-            <small className="text-muted">
-              {testCases.length} test cases
-            </small>
-          </div>
-        </div>
-      </div>
+      
 
       {error && (
         <div className="alert alert-danger" role="alert">
@@ -275,7 +256,32 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
       <div className="card progress-section mb-4">
         <div className="card-body">
           <div className="row align-items-center">
+
+            <div className="col-12 " >
+              <div className="plan-view-header d-flex align-items-center ">
+                  <button 
+                    className="btn btn-outline-secondary me-3"
+                    onClick={onBack}
+                  >
+                    <i className="fas fa-arrow-left me-2"></i>
+                    Back to Plans
+                  </button>
+                  <div className="flex-grow-1">
+                    <h1 className="h3 mb-1">{currentPlan.name}</h1>
+                    <div className="d-flex align-items-center gap-3">
+                      <span className={`badge ${getStatusBadgeClass(currentPlan.status)}`}>
+                        {currentPlan.status}
+                      </span>
+                      <small className="text-muted">
+                        {testCases.length} test cases
+                      </small>
+                    </div>
+                  </div>
+              </div>
+            </div>
             <div className="col-md-8">
+              
+             
               <div className="d-flex gap-4 mb-2">
                 <div>
                   <small className="text-muted">Total Cases:</small>
