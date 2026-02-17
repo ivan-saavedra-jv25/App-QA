@@ -272,19 +272,19 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
               <div className="plan-view-header">
                 <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3 mb-3">
                   <button 
-                    className="btn btn-outline-secondary btn-responsive"
+                    className="btn btn-outline-secondary btn-responsive font-hack"
                     onClick={onBack}
                   >
                     <i className="fas fa-arrow-left me-2"></i>
                     <span className="btn-text">Back</span>
                   </button>
                   <div className="flex-grow-1">
-                    <h1 className="h3 h2-sm mb-2">{currentPlan.name}</h1>
+                    <h1 className="h3 h2-sm mb-2 font-hack">{currentPlan.name}</h1>
                     <div className="d-flex flex-wrap align-items-center gap-2">
-                      <span className={`badge ${getStatusBadgeClass(currentPlan.status)} badge-responsive`}>
+                      <span className={`badge ${getStatusBadgeClass(currentPlan.status)} badge-responsive font-hack`}>
                         {currentPlan.status}
                       </span>
-                      <span className="text-muted small">
+                      <span className="text-muted small font-hack">
                         <i className="fas fa-clipboard-list me-1"></i>
                         {testCases.length} cases
                       </span>
@@ -296,13 +296,13 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                 <div className="row g-3 mb-3">
                   <div className="col-6 col-md-3">
                     <div className="stat-card">
-                      <div className="stat-number">{testCases.length}</div>
+                      <div className="stat-number font-hack">{testCases.length}</div>
                       <div className="stat-label">Total</div>
                     </div>
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="stat-card">
-                      <div className="stat-number text-success">
+                      <div className="stat-number text-success font-hack">
                         {testCases.filter(tc => tc.status === 'PASSED').length}
                       </div>
                       <div className="stat-label">Passed</div>
@@ -310,7 +310,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="stat-card">
-                      <div className="stat-number text-warning">
+                      <div className="stat-number text-warning font-hack">
                         {testCases.filter(tc => tc.status === 'PENDING').length}
                       </div>
                       <div className="stat-label">Pending</div>
@@ -318,7 +318,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   </div>
                   <div className="col-6 col-md-3">
                     <div className="stat-card">
-                      <div className="stat-number text-danger">
+                      <div className="stat-number text-danger font-hack">
                         {testCases.filter(tc => tc.status === 'FAILED').length}
                       </div>
                       <div className="stat-label">Failed</div>
@@ -327,7 +327,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                 </div>
                 
                 {currentPlan.description && (
-                  <p className="text-muted mb-0 description-text">{currentPlan.description}</p>
+                  <p className="text-muted mb-0 description-text font-hack">{currentPlan.description}</p>
                 )}
               </div>
             </div>
@@ -341,8 +341,8 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   strokeWidth={window.innerWidth < 768 ? 8 : 12}
                 />
                 <div className="progress-label mt-2">
-                  <span className="h5 mb-0">{currentPlan.progress}%</span>
-                  <div className="text-muted small">Complete</div>
+                  <span className="h5 mb-0 font-hack">{currentPlan.progress}%</span>
+                  <div className="text-muted small font-hack">Complete</div>
                 </div>
               </div>
             </div>
@@ -368,17 +368,17 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
         <div className="card-header test-cases-header">
           <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
             <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3">
-              <h5 className="mb-0">
+              <h5 className="mb-0 font-hack">
                 <i className="fas fa-clipboard-list me-2"></i>
                 Test Cases
               </h5>
               <div className="filter-section">
-                <label htmlFor="statusFilter" className="form-label me-2 mb-0 small">
+                <label htmlFor="statusFilter" className="form-label me-2 mb-0 small font-hack">
                   Filter:
                 </label>
                 <select
                   id="statusFilter"
-                  className="form-select form-select-sm"
+                  className="form-select form-select-sm font-hack"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   style={{ minWidth: '120px' }}
@@ -402,7 +402,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
               </div>
             </div>
             <button 
-              className="btn btn-primary btn-responsive btn-add-test-case"
+              className="btn btn-primary btn-responsive btn-add-test-case font-hack"
               onClick={() => setShowAddForm(true)}
             >
               <i className="fas fa-plus me-2"></i>
@@ -415,10 +415,10 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
             <div className="text-center py-5 empty-state">
               <div className="empty-state-content">
                 <i className="fas fa-filter display-4 text-muted mb-3"></i>
-                <h6 className="text-muted mb-2">
+                <h6 className="text-muted mb-2 font-hack">
                   {statusFilter === 'all' ? 'No test cases yet' : `No ${statusFilter.toLowerCase()} test cases`}
                 </h6>
-                <p className="text-muted mb-4">
+                <p className="text-muted mb-4 font-hack">
                   {statusFilter === 'all' 
                     ? 'Add your first test case to get started' 
                     : `No test cases found with status "${statusFilter}"`
@@ -426,7 +426,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                 </p>
                 {statusFilter === 'all' && (
                   <button 
-                    className="btn btn-primary btn-responsive"
+                    className="btn btn-primary btn-responsive font-hack"
                     onClick={() => setShowAddForm(true)}
                   >
                     <i className="fas fa-plus me-2"></i>
@@ -452,11 +452,11 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                       <div className="test-case-header">
                         <div className="d-flex justify-content-between align-items-start">
                           <div className="flex-grow-1">
-                            <div className="d-flex align-items-center gap-2 mb-1">
-                              <h6 className="mb-0 test-case-title">{testCase.name}</h6>
+                            <div className="d-flex align-items-center gap-2 mb-2">
+                              <h6 className="mb-0 test-case-title font-hack">{testCase.name}</h6>
                               {testCase.status === 'PASSED' && (
                                 <button 
-                                  className="expand-collapse-btn btn btn-outline-secondary btn-sm py-0 px-2"
+                                  className="expand-collapse-btn btn btn-outline-secondary btn-sm py-0 px-2 font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     toggleTestCaseCollapse(testCase.id);
@@ -469,8 +469,8 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                             </div>
                             
                             {/* Status Badge */}
-                            <div className="mb-1">
-                              <span className={`badge ${getTestCaseStatusClass(testCase.status)} badge-responsive`}>
+                            <div className="mb-2">
+                              <span className={`badge ${getTestCaseStatusClass(testCase.status)} badge-responsive font-hack`}>
                                 <i className={`fas ${
                                   testCase.status === 'PASSED' ? 'fa-check-circle' :
                                   testCase.status === 'FAILED' ? 'fa-times-circle' :
@@ -488,7 +488,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                         {!isCollapsed && (
                           <>
                             {testCase.description && (
-                              <p className="text-muted small mb-3 description-text">
+                              <p className="text-muted small mb-3 description-text font-hack">
                                 {testCase.description}
                               </p>
                             )}
@@ -496,12 +496,12 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                             {/* Tags */}
                             <div className="d-flex flex-wrap gap-2 mb-3">
                               {testCase.validation_type && (
-                                <span className={`badge ${getTypeClass(testCase.validation_type)} small`}>
+                                <span className={`badge ${getTypeClass(testCase.validation_type)} small font-hack`}>
                                   <i className="fas fa-tag me-1"></i>
                                   {testCase.validation_type}
                                 </span>
                               )}
-                              <span className={`badge ${getPriorityClass(testCase.priority)} small`}>
+                              <span className={`badge ${getPriorityClass(testCase.priority)} small font-hack`}>
                                 <i className={`fas ${
                                   testCase.priority === 'P1' ? 'fa-exclamation-triangle' :
                                   testCase.priority === 'P2' ? 'fa-info-circle' :
@@ -515,7 +515,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                             <div className="test-case-actions">
                               <div className="action-buttons-grid">
                                 <button 
-                                  className="btn btn-success btn-action"
+                                  className="btn btn-success btn-action font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleStatusChange(testCase.id, 'PASSED');
@@ -527,7 +527,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                                   <span className="btn-text">Passed</span>
                                 </button>
                                 <button 
-                                  className="btn btn-danger btn-action"
+                                  className="btn btn-danger btn-action font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleStatusChange(testCase.id, 'FAILED');
@@ -539,7 +539,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                                   <span className="btn-text">Failed</span>
                                 </button>
                                 <button 
-                                  className="btn btn-warning btn-action"
+                                  className="btn btn-warning btn-action font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleStatusChange(testCase.id, 'PENDING');
@@ -551,7 +551,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                                   <span className="btn-text">Pending</span>
                                 </button>
                                 <button 
-                                  className="btn btn-outline-danger btn-action"
+                                  className="btn btn-outline-danger btn-action font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteTestCase(testCase.id);
@@ -616,12 +616,12 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   
                   <div className="row g-3">
                     <div className="col-12">
-                      <label htmlFor="testCaseName" className="form-label">
+                      <label htmlFor="testCaseName" className="form-label font-hack">
                         Test Case Name <span className="text-danger">*</span>
                       </label>
                       <input
                         type="text"
-                        className={`form-control form-control-lg ${error && !newTestCase.name.trim() ? 'is-invalid' : ''}`}
+                        className={`form-control form-control-lg font-hack ${error && !newTestCase.name.trim() ? 'is-invalid' : ''}`}
                         id="testCaseName"
                         value={newTestCase.name}
                         onChange={(e) => setNewTestCase({ ...newTestCase, name: e.target.value })}
@@ -630,18 +630,18 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                         disabled={addingTestCase}
                       />
                       {error && !newTestCase.name.trim() && (
-                        <div className="invalid-feedback">
+                        <div className="invalid-feedback font-hack">
                           Test case name is required
                         </div>
                       )}
                     </div>
                     
                     <div className="col-12">
-                      <label htmlFor="testCaseDescription" className="form-label">
+                      <label htmlFor="testCaseDescription" className="form-label font-hack">
                         Description
                       </label>
                       <textarea
-                        className="form-control"
+                        className="form-control hack-textarea font-hack"
                         id="testCaseDescription"
                         value={newTestCase.description}
                         onChange={(e) => setNewTestCase({ ...newTestCase, description: e.target.value })}
@@ -652,12 +652,12 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                     </div>
                     
                     <div className="col-12 col-md-6">
-                      <label htmlFor="testCaseType" className="form-label">
+                      <label htmlFor="testCaseType" className="form-label font-hack">
                         Validation Type
                       </label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control font-hack"
                         id="testCaseType"
                         value={newTestCase.validationType}
                         onChange={(e) => setNewTestCase({ ...newTestCase, validationType: e.target.value })}
@@ -668,11 +668,11 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                     </div>
                     
                     <div className="col-12 col-md-6">
-                      <label htmlFor="testCasePriority" className="form-label">
+                      <label htmlFor="testCasePriority" className="form-label font-hack">
                         Priority
                       </label>
                       <select
-                        className="form-select"
+                        className="form-select font-hack"
                         id="testCasePriority"
                         value={newTestCase.priority}
                         onChange={(e) => setNewTestCase({ ...newTestCase, priority: e.target.value })}
@@ -689,7 +689,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   <div className="d-flex flex-column flex-sm-row gap-2 w-100">
                     <button 
                       type="button"
-                      className="btn btn-secondary flex-fill flex-sm-grow-0"
+                      className="btn btn-secondary flex-fill flex-sm-grow-0 font-hack"
                       onClick={() => {
                         setShowAddForm(false);
                         setNewTestCase({ 
@@ -707,7 +707,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                     </button>
                     <button 
                       type="submit"
-                      className="btn btn-primary flex-fill flex-sm-grow-0"
+                      className="btn btn-primary flex-fill flex-sm-grow-0 font-hack"
                       disabled={addingTestCase || !newTestCase.name.trim()}
                     >
                       {addingTestCase ? (

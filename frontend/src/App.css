@@ -1,14 +1,56 @@
+/* Importación de fuentes personalizadas */
+@import url('https://fonts.googleapis.com/css2?family=Hack:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=OCR+A+Std&display=swap');
+
 /* Estilos base */
+:root {
+  --font-hack: 'Hack', 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-ocr-a: 'OCR A Std', 'Courier New', monospace;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-hack);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--gray-100);
   color: var(--gray-900);
   line-height: 1.6;
+}
+
+/* Clases para fuentes personalizadas */
+.font-hack {
+  font-family: var(--font-hack) !important;
+}
+
+.font-ocr-a {
+  font-family: var(--font-ocr-a) !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Estilos específicos para OCR-A */
+.ocr-style {
+  font-family: var(--font-ocr-a);
+  background-color: #1a1a1a;
+  color: #00ff00;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 2px solid #00ff00;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Estilos específicos para Hack */
+.hack-style {
+  font-family: var(--font-hack);
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #3e4451;
+  font-weight: 400;
 }
 
 /* Efecto hover en tarjetas */
@@ -23,8 +65,46 @@ body {
 
 /* Estilos para el textarea de JSON */
 .font-monospace {
-  font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: var(--font-hack);
   background-color: var(--gray-100);
+}
+
+/* Textareas con estilo Hack */
+.hack-textarea {
+  font-family: var(--font-hack);
+  background-color: #282c34;
+  color: #abb2bf;
+  border: 1px solid #3e4451;
+  padding: 0.75rem;
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.hack-textarea:focus {
+  outline: none;
+  border-color: #61dafb;
+  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.2);
+}
+
+/* Textareas con estilo OCR-A */
+.ocr-textarea {
+  font-family: var(--font-ocr-a);
+  background-color: #1a1a1a;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 0.75rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.ocr-textarea:focus {
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.3);
 }
 
 /* Transiciones suaves */
@@ -38,6 +118,65 @@ body {
   align-items: center;
   justify-content: center;
   transition: var(--transition);
+  font-family: var(--font-hack);
+}
+
+/* Botones con estilo Hack */
+.btn-hack {
+  font-family: var(--font-hack);
+  background-color: #282c34;
+  color: #abb2bf;
+  border: 1px solid #3e4451;
+  font-weight: 500;
+}
+
+.btn-hack:hover {
+  background-color: #3e4451;
+  color: #ffffff;
+  border-color: #4c515e;
+}
+
+/* Botones con estilo OCR-A */
+.btn-ocr {
+  font-family: var(--font-ocr-a);
+  background-color: #1a1a1a;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding: 0.5rem 1rem;
+}
+
+.btn-ocr:hover {
+  background-color: #00ff00;
+  color: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+/* Códigos y pre-formateados */
+.code-hack {
+  font-family: var(--font-hack);
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #3e4451;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.code-ocr {
+  font-family: var(--font-ocr-a);
+  background-color: #1a1a1a;
+  color: #00ff00;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 2px solid #00ff00;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  overflow-x: auto;
+  white-space: pre-wrap;
 }
 
 /* Ajustes responsivos */
