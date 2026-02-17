@@ -15,6 +15,7 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all'); // Nuevo estado para el filtro
   const [newTestCase, setNewTestCase] = useState({ 
     name: '', 
     description: '', 
@@ -230,6 +231,22 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
     setSelectedTestCase(prev => prev === testCaseId ? null : testCaseId);
   };
 
+  // Función para filtrar test cases por estado
+  const getFilteredTestCases = () => {
+    if (statusFilter === 'all') {
+      return testCases;
+    }
+    return testCases.filter(testCase => testCase.status === statusFilter);
+  };
+
+  // Función para obtener el conteo de test cases por estado
+  const getTestCaseCount = (status) => {
+    if (status === 'all') {
+      return testCases.length;
+    }
+    return testCases.filter(testCase => testCase.status === status).length;
+  };
+
   if (loading) {
     return (
       <div className="container py-4" style={{ maxWidth: '1200px' }}>
@@ -245,211 +262,308 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
   return (
     <div className="container plan-view-container py-4" style={{ maxWidth: '1200px' }}>
       
-
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
-
-      {/* Progress Section */}
+      {/* Header Section - Responsive */}
       <div className="card progress-section mb-4">
         <div className="card-body">
-          <div className="row align-items-center">
-
-            <div className="col-12 " >
-              <div className="plan-view-header d-flex align-items-center ">
+          <div className="row align-items-center g-4">
+            
+            {/* Plan Header - Mobile First */}
+            <div className="col-12 col-lg-7">
+              <div className="plan-view-header">
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3 mb-3">
                   <button 
-                    className="btn btn-outline-secondary me-3"
+                    className="btn btn-outline-secondary btn-responsive"
                     onClick={onBack}
                   >
                     <i className="fas fa-arrow-left me-2"></i>
-                    Back to Plans
+                    <span className="btn-text">Back</span>
                   </button>
                   <div className="flex-grow-1">
-                    <h1 className="h3 mb-1">{currentPlan.name}</h1>
-                    <div className="d-flex align-items-center gap-3">
-                      <span className={`badge ${getStatusBadgeClass(currentPlan.status)}`}>
+                    <h1 className="h3 h2-sm mb-2">{currentPlan.name}</h1>
+                    <div className="d-flex flex-wrap align-items-center gap-2">
+                      <span className={`badge ${getStatusBadgeClass(currentPlan.status)} badge-responsive`}>
                         {currentPlan.status}
                       </span>
-                      <small className="text-muted">
-                        {testCases.length} test cases
-                      </small>
+                      <span className="text-muted small">
+                        <i className="fas fa-clipboard-list me-1"></i>
+                        {testCases.length} cases
+                      </span>
                     </div>
                   </div>
+                </div>
+                
+                {/* Stats Row */}
+                <div className="row g-3 mb-3">
+                  <div className="col-6 col-md-3">
+                    <div className="stat-card">
+                      <div className="stat-number">{testCases.length}</div>
+                      <div className="stat-label">Total</div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-md-3">
+                    <div className="stat-card">
+                      <div className="stat-number text-success">
+                        {testCases.filter(tc => tc.status === 'PASSED').length}
+                      </div>
+                      <div className="stat-label">Passed</div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-md-3">
+                    <div className="stat-card">
+                      <div className="stat-number text-warning">
+                        {testCases.filter(tc => tc.status === 'PENDING').length}
+                      </div>
+                      <div className="stat-label">Pending</div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-md-3">
+                    <div className="stat-card">
+                      <div className="stat-number text-danger">
+                        {testCases.filter(tc => tc.status === 'FAILED').length}
+                      </div>
+                      <div className="stat-label">Failed</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {currentPlan.description && (
+                  <p className="text-muted mb-0 description-text">{currentPlan.description}</p>
+                )}
               </div>
             </div>
-            <div className="col-md-8">
-              
-             
-              <div className="d-flex gap-4 mb-2">
-                <div>
-                  <small className="text-muted">Total Cases:</small>
-                  <span className="ms-2 fw-bold">{testCases.length}</span>
-                </div>
-                <div>
-                  <small className="text-muted">Passed:</small>
-                  <span className="ms-2 fw-bold">
-                    {testCases.filter(tc => tc.status === 'PASSED').length}
-                  </span>
-                </div>
-                <div>
-                  <small className="text-muted">Remaining:</small>
-                  <span className="ms-2 fw-bold">
-                    {testCases.filter(tc => tc.status === 'PENDING').length}
-                  </span>
-                </div>
-              </div>
-              {currentPlan.description && (
-                <p className="text-muted mb-0">{currentPlan.description}</p>
-              )}
-            </div>
-            <div className="col-md-4 text-center">
-              <div className="circular-progress">
+            
+            {/* Progress Circle - Responsive */}
+            <div className="col-12 col-lg-5 text-center">
+              <div className="circular-progress-wrapper">
                 <CircularProgress 
                   percentage={currentPlan.progress} 
-                  size={150}
-                  strokeWidth={12}
+                  size={window.innerWidth < 768 ? 120 : 150}
+                  strokeWidth={window.innerWidth < 768 ? 8 : 12}
                 />
+                <div className="progress-label mt-2">
+                  <span className="h5 mb-0">{currentPlan.progress}%</span>
+                  <div className="text-muted small">Complete</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Test Cases Section */}
-      <div className="card test-cases-section">
-        <div className="card-header test-cases-header d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">Test Cases</h5>
+      {/* Error Alert */}
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          <i className="fas fa-exclamation-triangle me-2"></i>
+          {error}
           <button 
-            className="btn btn-primary btn-sm"
-            onClick={() => setShowAddForm(true)}
-          >
-            <i className="fas fa-plus me-2"></i>
-            Add Test Case
-          </button>
+            type="button" 
+            className="btn-close"
+            onClick={() => setError(null)}
+          ></button>
+        </div>
+      )}
+
+      {/* Test Cases Section - Responsive */}
+      <div className="card test-cases-section">
+        <div className="card-header test-cases-header">
+          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3">
+              <h5 className="mb-0">
+                <i className="fas fa-clipboard-list me-2"></i>
+                Test Cases
+              </h5>
+              <div className="filter-section">
+                <label htmlFor="statusFilter" className="form-label me-2 mb-0 small">
+                  Filter:
+                </label>
+                <select
+                  id="statusFilter"
+                  className="form-select form-select-sm"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  style={{ minWidth: '120px' }}
+                >
+                  <option value="all">
+                    All ({getTestCaseCount('all')})
+                  </option>
+                  <option value="PASSED">
+                    Passed ({getTestCaseCount('PASSED')})
+                  </option>
+                  <option value="PENDING">
+                    Pending ({getTestCaseCount('PENDING')})
+                  </option>
+                  <option value="FAILED">
+                    Failed ({getTestCaseCount('FAILED')})
+                  </option>
+                  <option value="NA">
+                    N/A ({getTestCaseCount('NA')})
+                  </option>
+                </select>
+              </div>
+            </div>
+            <button 
+              className="btn btn-primary btn-responsive btn-add-test-case"
+              onClick={() => setShowAddForm(true)}
+            >
+              <i className="fas fa-plus me-2"></i>
+              <span className="btn-text">Add Test Case</span>
+            </button>
+          </div>
         </div>
         <div className="card-body">
-          {testCases.length === 0 ? (
-            <div className="text-center py-4 empty-state">
-              <div className="text-muted">
-                <i className="fas fa-clipboard-times display-4 d-block mb-3"></i>
-                <h6>No test cases yet</h6>
-                <p>Add your first test case to get started</p>
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => setShowAddForm(true)}
-                >
-                  Add Test Case
-                </button>
+          {getFilteredTestCases().length === 0 ? (
+            <div className="text-center py-5 empty-state">
+              <div className="empty-state-content">
+                <i className="fas fa-filter display-4 text-muted mb-3"></i>
+                <h6 className="text-muted mb-2">
+                  {statusFilter === 'all' ? 'No test cases yet' : `No ${statusFilter.toLowerCase()} test cases`}
+                </h6>
+                <p className="text-muted mb-4">
+                  {statusFilter === 'all' 
+                    ? 'Add your first test case to get started' 
+                    : `No test cases found with status "${statusFilter}"`
+                  }
+                </p>
+                {statusFilter === 'all' && (
+                  <button 
+                    className="btn btn-primary btn-responsive"
+                    onClick={() => setShowAddForm(true)}
+                  >
+                    <i className="fas fa-plus me-2"></i>
+                    <span className="btn-text">Add Test Case</span>
+                  </button>
+                )}
               </div>
             </div>
           ) : (
-            <div className="list-group list-group-flush">
-              {testCases.map(testCase => {
+            <div className="test-cases-list">
+              {getFilteredTestCases().map(testCase => {
                 const isCollapsed = testCase.status === 'PASSED' && !collapsedTestCases.has(testCase.id);
                 const isSelected = selectedTestCase === testCase.id;
                 
                 return (
                   <div 
                     key={testCase.id} 
-                    className={`list-group-item ${isSelected ? 'selected' : ''} ${isCollapsed ? 'collapsed' : ''}`}
-                    style={{ 
-                      cursor: 'pointer',
-                      backgroundColor: isSelected ? '#e3f2fd' : 'transparent'
-                    }}
+                    className={`test-case-item ${isSelected ? 'selected' : ''} ${isCollapsed ? 'collapsed' : ''}`}
                     onClick={() => handleTestCaseClick(testCase.id)}
                   >
-                    <div className="d-flex justify-content-between align-items-start">
-                      <div className="flex-grow-1">
-                        <div className="d-flex align-items-center gap-2 mb-1">
-                          <h6 className="mb-0">{testCase.name}</h6>
-                          {testCase.status === 'PASSED' && (
-                            <button 
-                              className="expand-collapse-btn btn btn-outline-secondary btn-sm py-0 px-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleTestCaseCollapse(testCase.id);
-                              }}
-                              title={isCollapsed ? "Expand" : "Collapse"}
-                            >
-                              <i className={`fas fa-chevron-${isCollapsed ? 'down' : 'up'}`}></i>
-                            </button>
-                          )}
-                        </div>
-                        <div className="test-case-description">
-                          {!isCollapsed && (
-                            <>
-                              {testCase.description && (
-                                <p className="text-muted small mb-2">{testCase.description}</p>
+                    <div className="test-case-content">
+                      {/* Test Case Header */}
+                      <div className="test-case-header">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <div className="flex-grow-1">
+                            <div className="d-flex align-items-center gap-2 mb-1">
+                              <h6 className="mb-0 test-case-title">{testCase.name}</h6>
+                              {testCase.status === 'PASSED' && (
+                                <button 
+                                  className="expand-collapse-btn btn btn-outline-secondary btn-sm py-0 px-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleTestCaseCollapse(testCase.id);
+                                  }}
+                                  title={isCollapsed ? "Expand" : "Collapse"}
+                                >
+                                  <i className={`fas fa-chevron-${isCollapsed ? 'down' : 'up'}`}></i>
+                                </button>
                               )}
-                              <div className="d-flex gap-2 mb-2">
-                                {testCase.validation_type && (
-                                  <span className={`badge ${getTypeClass(testCase.validation_type)} small`}>
-                                    {testCase.validation_type}
-                                  </span>
-                                )}
-                                <span className={`badge ${getPriorityClass(testCase.priority)} small`}>
-                                  {testCase.priority}
-                                </span>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                        <div className="d-flex gap-2 mb-2">
-                          <span className={`badge ${getTestCaseStatusClass(testCase.status)}`}>
-                            {testCase.status}
-                          </span>
+                            </div>
+                            
+                            {/* Status Badge */}
+                            <div className="mb-1">
+                              <span className={`badge ${getTestCaseStatusClass(testCase.status)} badge-responsive`}>
+                                <i className={`fas ${
+                                  testCase.status === 'PASSED' ? 'fa-check-circle' :
+                                  testCase.status === 'FAILED' ? 'fa-times-circle' :
+                                  'fa-clock'
+                                } me-1`}></i>
+                                {testCase.status}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="test-case-actions">
+
+                      {/* Test Case Details - Collapsible */}
+                      <div className="test-case-details">
                         {!isCollapsed && (
-                          <div className="d-flex gap-1">
-                            <button 
-                              className="btn btn-success btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleStatusChange(testCase.id, 'PASSED');
-                              }}
-                              title="Mark as Passed"
-                              disabled={testCase.status === 'PASSED'}
-                            >
-                              <i className="fas fa-check"></i> PASSED
-                            </button>
-                            <button 
-                              className="btn btn-danger btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleStatusChange(testCase.id, 'FAILED');
-                              }}
-                              title="Mark as Failed"
-                              disabled={testCase.status === 'FAILED'}
-                            >
-                              <i className="fas fa-times"></i> FAILED
-                            </button>
-                           
-                            <button 
-                              className="btn btn-warning btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleStatusChange(testCase.id, 'PENDING');
-                              }}
-                              title="Reset to Pending"
-                              disabled={testCase.status === 'PENDING'}
-                            >
-                              <i className="fas fa-undo"></i> PENDING
-                            </button>
-                            <button 
-                              className="btn btn-outline-danger btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteTestCase(testCase.id);
-                              }}
-                              title="Delete test case"
-                            >
-                              <i className="fas fa-trash"></i> DELETE
-                            </button>
-                          </div>
+                          <>
+                            {testCase.description && (
+                              <p className="text-muted small mb-3 description-text">
+                                {testCase.description}
+                              </p>
+                            )}
+                            
+                            {/* Tags */}
+                            <div className="d-flex flex-wrap gap-2 mb-3">
+                              {testCase.validation_type && (
+                                <span className={`badge ${getTypeClass(testCase.validation_type)} small`}>
+                                  <i className="fas fa-tag me-1"></i>
+                                  {testCase.validation_type}
+                                </span>
+                              )}
+                              <span className={`badge ${getPriorityClass(testCase.priority)} small`}>
+                                <i className={`fas ${
+                                  testCase.priority === 'P1' ? 'fa-exclamation-triangle' :
+                                  testCase.priority === 'P2' ? 'fa-info-circle' :
+                                  'fa-arrow-down'
+                                } me-1`}></i>
+                                {testCase.priority}
+                              </span>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="test-case-actions">
+                              <div className="action-buttons-grid">
+                                <button 
+                                  className="btn btn-success btn-action"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStatusChange(testCase.id, 'PASSED');
+                                  }}
+                                  title="Mark as Passed"
+                                  disabled={testCase.status === 'PASSED'}
+                                >
+                                  <i className="fas fa-check"></i>
+                                  <span className="btn-text">Passed</span>
+                                </button>
+                                <button 
+                                  className="btn btn-danger btn-action"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStatusChange(testCase.id, 'FAILED');
+                                  }}
+                                  title="Mark as Failed"
+                                  disabled={testCase.status === 'FAILED'}
+                                >
+                                  <i className="fas fa-times"></i>
+                                  <span className="btn-text">Failed</span>
+                                </button>
+                                <button 
+                                  className="btn btn-warning btn-action"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStatusChange(testCase.id, 'PENDING');
+                                  }}
+                                  title="Reset to Pending"
+                                  disabled={testCase.status === 'PENDING'}
+                                >
+                                  <i className="fas fa-undo"></i>
+                                  <span className="btn-text">Pending</span>
+                                </button>
+                                <button 
+                                  className="btn btn-outline-danger btn-action"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteTestCase(testCase.id);
+                                  }}
+                                  title="Delete test case"
+                                >
+                                  <i className="fas fa-trash"></i>
+                                  <span className="btn-text">Delete</span>
+                                </button>
+                              </div>
+                            </div>
+                          </>
                         )}
                       </div>
                     </div>
@@ -461,13 +575,16 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
         </div>
       </div>
 
-      {/* Add Test Case Modal */}
+      {/* Add Test Case Modal - Responsive */}
       {showAddForm && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-dialog-centered modal-responsive">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Add Test Case</h5>
+                <h5 className="modal-title">
+                  <i className="fas fa-plus me-2"></i>
+                  Add Test Case
+                </h5>
                 <button 
                   type="button" 
                   className="btn-close"
@@ -486,113 +603,128 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
               <form onSubmit={handleAddTestCase}>
                 <div className="modal-body">
                   {error && (
-                    <div className="alert alert-danger" role="alert">
+                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                      <i className="fas fa-exclamation-triangle me-2"></i>
                       {error}
+                      <button 
+                        type="button" 
+                        className="btn-close"
+                        onClick={() => setError(null)}
+                      ></button>
                     </div>
                   )}
-                  <div className="mb-3">
-                    <label htmlFor="testCaseName" className="form-label">
-                      Test Case Name <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className={`form-control ${error && !newTestCase.name.trim() ? 'is-invalid' : ''}`}
-                      id="testCaseName"
-                      value={newTestCase.name}
-                      onChange={(e) => setNewTestCase({ ...newTestCase, name: e.target.value })}
-                      placeholder="Enter test case name"
-                      maxLength={150}
-                      disabled={addingTestCase}
-                    />
-                    {error && !newTestCase.name.trim() && (
-                      <div className="invalid-feedback">
-                        Test case name is required
-                      </div>
-                    )}
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="testCaseDescription" className="form-label">
-                      Description
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="testCaseDescription"
-                      value={newTestCase.description}
-                      onChange={(e) => setNewTestCase({ ...newTestCase, description: e.target.value })}
-                      placeholder="Enter test case description (optional)"
-                      rows={3}
-                      disabled={addingTestCase}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="testCaseType" className="form-label">
-                      Validation Type
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="testCaseType"
-                      value={newTestCase.validationType}
-                      onChange={(e) => setNewTestCase({ ...newTestCase, validationType: e.target.value })}
-                      placeholder="Enter validation type (optional)"
-                      maxLength={100}
-                      disabled={addingTestCase}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="testCasePriority" className="form-label">
-                      Priority
-                    </label>
-                    <select
-                      className="form-select"
-                      id="testCasePriority"
-                      value={newTestCase.priority}
-                      onChange={(e) => setNewTestCase({ ...newTestCase, priority: e.target.value })}
-                      disabled={addingTestCase}
-                    >
-                      <option value="P1">P1 - High</option>
-                      <option value="P2">P2 - Medium</option>
-                      <option value="P3">P3 - Low</option>
-                    </select>
+                  
+                  <div className="row g-3">
+                    <div className="col-12">
+                      <label htmlFor="testCaseName" className="form-label">
+                        Test Case Name <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className={`form-control form-control-lg ${error && !newTestCase.name.trim() ? 'is-invalid' : ''}`}
+                        id="testCaseName"
+                        value={newTestCase.name}
+                        onChange={(e) => setNewTestCase({ ...newTestCase, name: e.target.value })}
+                        placeholder="Enter test case name"
+                        maxLength={150}
+                        disabled={addingTestCase}
+                      />
+                      {error && !newTestCase.name.trim() && (
+                        <div className="invalid-feedback">
+                          Test case name is required
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="col-12">
+                      <label htmlFor="testCaseDescription" className="form-label">
+                        Description
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="testCaseDescription"
+                        value={newTestCase.description}
+                        onChange={(e) => setNewTestCase({ ...newTestCase, description: e.target.value })}
+                        placeholder="Enter test case description (optional)"
+                        rows={3}
+                        disabled={addingTestCase}
+                      />
+                    </div>
+                    
+                    <div className="col-12 col-md-6">
+                      <label htmlFor="testCaseType" className="form-label">
+                        Validation Type
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="testCaseType"
+                        value={newTestCase.validationType}
+                        onChange={(e) => setNewTestCase({ ...newTestCase, validationType: e.target.value })}
+                        placeholder="Enter validation type"
+                        maxLength={100}
+                        disabled={addingTestCase}
+                      />
+                    </div>
+                    
+                    <div className="col-12 col-md-6">
+                      <label htmlFor="testCasePriority" className="form-label">
+                        Priority
+                      </label>
+                      <select
+                        className="form-select"
+                        id="testCasePriority"
+                        value={newTestCase.priority}
+                        onChange={(e) => setNewTestCase({ ...newTestCase, priority: e.target.value })}
+                        disabled={addingTestCase}
+                      >
+                        <option value="P1">P1 - High</option>
+                        <option value="P2">P2 - Medium</option>
+                        <option value="P3">P3 - Low</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button 
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      setShowAddForm(false);
-                      setNewTestCase({ 
-                        name: '', 
-                        description: '', 
-                        validationType: '', 
-                        priority: 'P2' 
-                      });
-                      setError(null);
-                    }}
-                    disabled={addingTestCase}
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={addingTestCase || !newTestCase.name.trim()}
-                  >
-                    {addingTestCase ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status">
-                          <span className="visually-hidden">Loading...</span>
-                        </span>
-                        Adding...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-plus me-2"></i>
-                        Add Test Case
-                      </>
-                    )}
-                  </button>
+                  <div className="d-flex flex-column flex-sm-row gap-2 w-100">
+                    <button 
+                      type="button"
+                      className="btn btn-secondary flex-fill flex-sm-grow-0"
+                      onClick={() => {
+                        setShowAddForm(false);
+                        setNewTestCase({ 
+                          name: '', 
+                          description: '', 
+                          validationType: '', 
+                          priority: 'P2' 
+                        });
+                        setError(null);
+                      }}
+                      disabled={addingTestCase}
+                    >
+                      <i className="fas fa-times me-2"></i>
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      className="btn btn-primary flex-fill flex-sm-grow-0"
+                      disabled={addingTestCase || !newTestCase.name.trim()}
+                    >
+                      {addingTestCase ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </span>
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-plus me-2"></i>
+                          Add Test Case
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
