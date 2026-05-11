@@ -90,6 +90,12 @@ module.exports = (sequelize) => {
       foreignKey: 'plan_id',
       as: 'plan',
     });
+
+    TestCase.hasMany(models.TestCaseExample, {
+      foreignKey: 'test_case_id',
+      as: 'examples',
+      onDelete: 'CASCADE',
+    });
   };
 
   return TestCase;

@@ -1,4 +1,4 @@
-const { TestCase, Plan } = require('../models');
+const { TestCase, Plan, TestCaseExample } = require('../models');
 const logger = require('../utils/logger');
 
 class TestCaseController {
@@ -27,6 +27,10 @@ class TestCaseController {
           model: Plan,
           as: 'plan',
           attributes: ['id', 'name'],
+        }, {
+          model: TestCaseExample,
+          as: 'examples',
+          order: [['created_at', 'ASC']],
         }],
       });
 
@@ -38,6 +42,54 @@ class TestCaseController {
     } catch (error) {
       console.error('Error getting test case:', error);
       res.status(500).json({ message: 'Error getting test case' });
+    }
+  }
+
+  // Obtener ejemplos de un test case
+  static async getExamplesByTestCase(req, res) {
+    try {
+      const { id } = req.params;
+      const examples = await TestCaseExample.findAll({
+        where: { test_case_id: id },
+        order: [['created_at', 'ASC']],
+      });
+
+      res.json(examples);
+    } catch (error) {
+      console.error('Error getting test case examples:', error);
+      res.status(500).json({ message: 'Error getting test case examples' });
+    }
+  }
+
+  // Crear ejemplo para un test case
+  static async createExample(req, res) {
+    try {
+      const { id } = req.params;
+      const { example_type, input_json } = req.body;
+
+      if (!example_type || !['TEXT', 'IMAGE_URL', 'FILE_SET'].includes(example_type)) {
+        return res.status(400).json({ message: 'Invalid example_type. Must be TEXT, IMAGE_URL, or FILE_SET' });
+      }
+
+      if (input_json === undefined || input_json === null) {
+        return res.status(400).json({ message: 'input_json is required' });
+      }
+
+      const testCase = await TestCase.findByPk(id);
+      if (!testCase) {
+        return res.status(404).json({ message: 'Test case not found' });
+      }
+
+      const example = await TestCaseExample.create({
+        test_case_id: id,
+        example_type,
+        input_json,
+      });
+
+      res.status(201).json(example);
+    } catch (error) {
+      console.error('Error creating test case example:', error);
+      res.status(500).json({ message: 'Error creating test case example' });
     }
   }
 

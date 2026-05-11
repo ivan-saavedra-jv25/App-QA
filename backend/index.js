@@ -30,6 +30,13 @@ app.get("/health/db", async (req, res, next) => {
 app.delete("/api/cleanup", async (req, res, next) => {
   try {
     await sequelize.transaction(async (t) => {
+      await sequelize.models.TestCaseExample?.destroy({
+        where: {},
+        truncate: true,
+        cascade: true,
+        transaction: t,
+      });
+
       await sequelize.models.TestCase.destroy({ 
         where: {},
         truncate: true,

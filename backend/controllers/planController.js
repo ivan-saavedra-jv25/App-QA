@@ -1,4 +1,4 @@
-const { Plan, TestCase } = require('../models');
+const { Plan, TestCase, TestCaseExample } = require('../models');
 const logger = require('../utils/logger');
 
 class PlanController {
@@ -112,9 +112,9 @@ class PlanController {
         
         if (validTestCases.length > 0) {
           const createdTestCases = await Promise.all(
-            validTestCases.map(tc => {
+            validTestCases.map(async (tc) => {
               logger.log('Creando test case:', tc);
-              return TestCase.create({
+              const createdTestCase = await TestCase.create({
                 plan_id: plan.id,
                 name: tc.name.trim(),
                 description: tc.description?.trim() || null,
@@ -122,6 +122,23 @@ class PlanController {
                 priority: tc.priority || 'P2',
                 status: 'PENDING',
               });
+
+              if (tc.examples && Array.isArray(tc.examples) && tc.examples.length > 0) {
+                const validExamples = tc.examples.filter(ex => ex && ex.example_type && ex.input_json !== undefined && ex.input_json !== null);
+                if (validExamples.length > 0) {
+                  await Promise.all(
+                    validExamples.map((ex) => {
+                      return TestCaseExample.create({
+                        test_case_id: createdTestCase.id,
+                        example_type: ex.example_type,
+                        input_json: ex.input_json,
+                      });
+                    })
+                  );
+                }
+              }
+
+              return createdTestCase;
             })
           );
           

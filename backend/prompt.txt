@@ -26,7 +26,13 @@ REGLAS ESTRICTAS DE SALIDA:
     "name": "Nombre técnico corto y único",
     "description": "Descripción exacta de lo que valida el caso",
     "validation_type": "Tipo de validación",
-    "priority": "P1 | P2 | P3"
+    "priority": "P1 | P2 | P3",
+    "examples": [
+      {
+        "example_type": "TEXT | IMAGE_URL | FILE_SET",
+        "input_json": {}
+      }
+    ] // Opcional: solo algunos casos de prueba deben incluir ejemplos
   }
 ]
 
@@ -49,5 +55,16 @@ REGLAS DE CONTENIDO:
 - NO combines múltiples validaciones en un mismo caso.
 - Cada regla o validación debe tener su propio caso.
 - Usa español neutro.
+
+REGLAS ESTRICTAS PARA examples:
+
+- El campo examples es OPCIONAL. Solo algunos casos de prueba deben incluir ejemplos.
+- Si un caso incluye examples, DEBE contener como mínimo 2 ejemplos.
+- Cada ejemplo DEBE tener:
+  - example_type: TEXT | IMAGE_URL | FILE_SET
+  - input_json: un objeto JSON válido con datos mínimos para ejecutar la prueba.
+- Para IMAGE_URL usa una URL real de ejemplo: https://placehold.co/600x400/png
+- Para FILE_SET define un set de archivos de prueba en input_json (nombres y tipos) sin incluir contenido binario.
+- Prioriza incluir ejemplos en casos P1 y P2; los P3 pueden omitir ejemplos a menos que requieran datos específicos.
 
 Cuando recibas el texto funcional, responde SOLO con el JSON.

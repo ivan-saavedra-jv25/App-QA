@@ -135,7 +135,45 @@ const CreatePlanModal = ({ isOpen, onClose, onPlanCreated }) => {
                   fontSize: '0.75rem',
                   padding: '0.25rem 0.5rem'
                 }}
-                onClick={() => setJsonText(JSON.stringify([{title:"Prueba 1", description:"Descripción..."}], null, 2))}
+                onClick={() => setJsonText(JSON.stringify([
+                  {
+                    name: "login_email_formato_invalido",
+                    description: "Valida que no permita login con email con formato inválido",
+                    validation_type: "formato",
+                    priority: "P1",
+                    examples: [
+                      {
+                        example_type: "TEXT",
+                        input_json: { email: "no-es-email", password: "Password123" }
+                      },
+                      {
+                        example_type: "TEXT",
+                        input_json: { email: "test@", password: "Password123" }
+                      }
+                    ]
+                  },
+                  {
+                    name: "subida_imagen_url_valida",
+                    description: "Valida que acepte una URL de imagen válida como entrada",
+                    validation_type: "funcional",
+                    priority: "P2",
+                    examples: [
+                      {
+                        example_type: "IMAGE_URL",
+                        input_json: { imageUrl: "https://placehold.co/600x400/png" }
+                      },
+                      {
+                        example_type: "FILE_SET",
+                        input_json: {
+                          files: [
+                            { name: "documento.pdf", mimeType: "application/pdf" },
+                            { name: "imagen.png", mimeType: "image/png" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ], null, 2))}
               >
                 <i className="fas fa-magic me-1"></i>Ejemplo
               </button>

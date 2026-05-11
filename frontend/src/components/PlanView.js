@@ -5,7 +5,8 @@ import {
   getTestCasesByPlan, 
   createTestCase, 
   updateTestCaseStatus, 
-  deleteTestCase 
+  deleteTestCase,
+  getTestCaseExamples
 } from '../api';
 import './PlanView.css';
 
@@ -25,6 +26,11 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
   const [addingTestCase, setAddingTestCase] = useState(false);
   const [collapsedTestCases, setCollapsedTestCases] = useState(new Set());
   const [selectedTestCase, setSelectedTestCase] = useState(null);
+  const [showExamplesModal, setShowExamplesModal] = useState(false);
+  const [examplesLoading, setExamplesLoading] = useState(false);
+  const [examplesError, setExamplesError] = useState(null);
+  const [examplesTestCase, setExamplesTestCase] = useState(null);
+  const [examples, setExamples] = useState([]);
 
   useEffect(() => {
     loadPlanData();
@@ -229,6 +235,24 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
 
   const handleTestCaseClick = (testCaseId) => {
     setSelectedTestCase(prev => prev === testCaseId ? null : testCaseId);
+  };
+
+  const handleOpenExamples = async (testCase) => {
+    try {
+      setExamplesError(null);
+      setExamples([]);
+      setExamplesTestCase(testCase);
+      setShowExamplesModal(true);
+      setExamplesLoading(true);
+
+      const data = await getTestCaseExamples(testCase.id);
+      setExamples(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setExamplesError('Error loading examples');
+      console.error('Error loading examples:', err);
+    } finally {
+      setExamplesLoading(false);
+    }
   };
 
   // Función para filtrar test cases por estado
@@ -515,6 +539,17 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                             <div className="test-case-actions">
                               <div className="action-buttons-grid">
                                 <button 
+                                  className="btn btn-outline-primary btn-action font-hack"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenExamples(testCase);
+                                  }}
+                                  title="View input examples"
+                                >
+                                  <i className="fas fa-flask"></i>
+                                  <span className="btn-text">Examples</span>
+                                </button>
+                                <button 
                                   className="btn btn-success btn-action font-hack"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -727,6 +762,79 @@ const PlanView = ({ plan, onBack, onPlanUpdate }) => {
                   </div>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Examples Modal */}
+      {showExamplesModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered modal-responsive">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title font-hack">
+                  <i className="fas fa-flask me-2"></i>
+                  Examples{examplesTestCase ? ` - ${examplesTestCase.name}` : ''}
+                </h5>
+                <button 
+                  type="button" 
+                  className="btn-close"
+                  onClick={() => {
+                    setShowExamplesModal(false);
+                    setExamplesError(null);
+                    setExamples([]);
+                    setExamplesTestCase(null);
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                {examplesError && (
+                  <div className="alert alert-danger" role="alert">
+                    {examplesError}
+                  </div>
+                )}
+
+                {examplesLoading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {examples.length === 0 ? (
+                      <div className="text-muted font-hack">No examples found for this test case.</div>
+                    ) : (
+                      <div className="d-flex flex-column gap-3">
+                        {examples.map((ex) => (
+                          <div key={ex.id} className="border rounded p-3 bg-light">
+                            <div className="d-flex justify-content-between align-items-center mb-2">
+                              <span className="badge bg-secondary font-hack">{ex.example_type}</span>
+                              <span className="text-muted small font-hack">#{ex.id}</span>
+                            </div>
+                            <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(ex.input_json, null, 2)}</pre>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary font-hack"
+                  onClick={() => {
+                    setShowExamplesModal(false);
+                    setExamplesError(null);
+                    setExamples([]);
+                    setExamplesTestCase(null);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

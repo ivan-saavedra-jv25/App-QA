@@ -12,6 +12,10 @@ router.get('/plan/:planId', TestCaseController.getTestCasesByPlan);
 // Obtener estadísticas de un plan
 router.get('/plan/:planId/stats', TestCaseController.getPlanStats);
 
+// Ejemplos de un test case (DEBE ir antes de /:id)
+router.get('/:id/examples', TestCaseController.getExamplesByTestCase);
+router.post('/:id/examples', TestCaseController.createExample);
+
 // Obtener un test case por ID
 router.get('/:id', TestCaseController.getTestCaseById);
 

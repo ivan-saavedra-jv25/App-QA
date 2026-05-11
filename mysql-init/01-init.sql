@@ -29,3 +29,15 @@ CREATE TABLE IF NOT EXISTS test_cases (
   KEY fk_cases_plan (plan_id),
   CONSTRAINT fk_cases_plan FOREIGN KEY (plan_id) REFERENCES plans (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS test_case_examples (
+  id int NOT NULL AUTO_INCREMENT,
+  test_case_id int NOT NULL,
+  example_type enum('TEXT','IMAGE_URL','FILE_SET') NOT NULL,
+  input_json json NOT NULL,
+  created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_examples_test_case_id (test_case_id),
+  CONSTRAINT fk_examples_test_case FOREIGN KEY (test_case_id) REFERENCES test_cases (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

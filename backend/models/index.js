@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const Plan = require('./Plan');
 const TestCase = require('./TestCase');
+const TestCaseExample = require('./TestCaseExample');
 const dbConfig = require('../config/db.config');
 
 // Configuración de la base de datos usando db.config.js
@@ -26,6 +27,7 @@ const sequelize = new Sequelize(
 const models = {
   Plan: Plan(sequelize),
   TestCase: TestCase(sequelize),
+  TestCaseExample: TestCaseExample(sequelize),
 };
 
 // Setup associations

@@ -47,6 +47,20 @@ export async function getTestCase(id){
   return res.json()
 }
 
+export async function getTestCaseExamples(testCaseId){
+  const res = await fetch(`${API}/api/test-cases/${testCaseId}/examples`)
+  return res.json()
+}
+
+export async function createTestCaseExample(testCaseId, example_type, input_json){
+  const res = await fetch(`${API}/api/test-cases/${testCaseId}/examples`,{
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ example_type, input_json })
+  })
+  return res.json()
+}
+
 export async function createTestCase(planId, name, description, validationType, priority){
   const res = await fetch(`${API}/api/test-cases/plan/${planId}`,{
     method: "POST",
